@@ -131,7 +131,7 @@ def parse_single_frame(raw_frame):
     payload = base_unit_payload + payload_unit
 
     ###POMMES
-    _id = int(base_unit[FRAME_IDENTIFIER_INDEX]) & 0x1FFFFFFF
+    _id = base_unit[FRAME_IDENTIFIER_INDEX] & 0x1FFFFFFF
 
     msg = Message(
         arbitration_id=_id,
@@ -141,7 +141,7 @@ def parse_single_frame(raw_frame):
         # channel=self.channel_info,
         is_remote_frame=False,
         is_error_frame=False,
-        is_extended_id=bool(_id > 0x7FF),
+        is_extended_id=bool(base_unit[FRAME_IDENTIFIER_INDEX] > 0x7FF),
     )
 
     if FrameType(base_unit[FRAME_TYPE_INDEX]) == FrameType.CAN_REMOTE:
@@ -238,7 +238,7 @@ def serialize_can_msg(can_msg):
         int(identifier),
         FrameType.CAN_DATA.value,
         0,  # flags, can be used for echo
-        0,  # info, not used
+        0,  # info, not used on can
         payload_length,
         base_unit_payload,
     )

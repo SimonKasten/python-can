@@ -4,8 +4,11 @@ Enable basic CAN over a NI XNet device.
 
 from __future__ import absolute_import, print_function, division
 
+import time
+
 from can import BusABC
 from can.bus import BusState
+from .errors import XnetError, XnetResourceWarning, XnetWarning  # NOQA
 
 
 from can.interfaces.nixnet import _enums as constants
@@ -89,16 +92,15 @@ class NiXnetBus(BusABC):
         """
         return self.output_session.flush()
 
-    def _recv_internal(self, timeout):
+    def _recv_internal(self, timeout=constants.Timeouts.TIMEOUT_NONE):
         """
         Read a msg from NIXnet BUS
         """
         if self.input_session.num_pend:
-            if timeout is None:
-                timeout = constants.Timeouts.TIMEOUT_INFINITE
             buffer, num = _funcs.nx_read_frame(
                 self.input_session.handle, _frames.nxFrameFixed_t.size, timeout
             )
+
             frame = _frames.parse_single_frame(buffer[:num])
             frame.channel = self.channel_info
 
@@ -106,6 +108,7 @@ class NiXnetBus(BusABC):
                 return frame, True
         # no pending Message
         return None, True
+
 
     def send(self, msg, timeout=None):
         if timeout is None:
