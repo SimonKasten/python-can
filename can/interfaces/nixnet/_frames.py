@@ -6,7 +6,7 @@ import struct
 
 from can.interfaces.nixnet import _cconsts
 from can.interfaces.nixnet import _errors
-from can.interfaces.nixnet._enums import FrameType 
+from can.interfaces.nixnet._enums import FrameType
 from can.interfaces.nixnet import _types
 
 ###POMMES
@@ -205,7 +205,6 @@ def parse_single_frame(raw_frame):
 #         yield payload_unit
 
 
-
 ###POMMES
 def serialize_can_msg(can_msg):
     """Yields units that compose the frame."""
@@ -226,9 +225,11 @@ def serialize_can_msg(can_msg):
 
     if payload_length != (payload_length & 0xFF):
         _errors.check_for_error(_cconsts.NX_ERR_NON_J1939_FRAME_SIZE)
-    
+
     if isinstance(can_msg.arbitration_id, int):
-        identifier = _types.CanIdentifier(can_msg.arbitration_id, extended=can_msg.is_extended_id)        
+        identifier = _types.CanIdentifier(
+            can_msg.arbitration_id, extended=can_msg.is_extended_id
+        )
     else:
         raise ValueError("frame cant be serialized, arbitration_id must be int")
 

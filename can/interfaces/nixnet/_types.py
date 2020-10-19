@@ -10,6 +10,7 @@ import typing  # NOQA: F401
 
 from can.interfaces.nixnet import _cconsts
 from can.interfaces.nixnet import _errors
+
 # from . import _py2
 # from . import _enums as constants
 

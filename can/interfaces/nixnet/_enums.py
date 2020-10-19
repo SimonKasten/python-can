@@ -1132,7 +1132,6 @@ class Timeouts(enum.Enum):
     TIMEOUT_INFINITE = _cconsts.NX_TIMEOUT_INFINITE
 
 
-
 class CreateSessionMode(enum.Enum):
     """Create Session Mode.
 

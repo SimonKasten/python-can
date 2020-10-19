@@ -19,8 +19,9 @@ from can.interfaces.nixnet._session import base
 
 class NiXnetBus(BusABC):
     """A NI XNet Bus."""
+
     def __init__(
-        self, *args, channel="CAN1", state=BusState.ACTIVE, bitrate=None, **kwargs
+        self, channel="CAN1", state=BusState.ACTIVE, bitrate=None, *args, **kwargs
     ):
         """A NI XNet interface to CAN."""
 
@@ -53,7 +54,7 @@ class NiXnetBus(BusABC):
         self.input_session.start()
 
         super(NiXnetBus, self).__init__(
-            *args, channel=channel, state=state, bitrate=bitrate, **kwargs
+            channel=channel, state=state, bitrate=bitrate, *args, **kwargs
         )
 
     @property
@@ -106,11 +107,10 @@ class NiXnetBus(BusABC):
         # no pending Message
         return None, True
 
-
     def send(self, msg, timeout=None):
         if timeout is None:
             timeout = 0
-        
+
         byte_frame = b"".join(_frames.serialize_can_msg(msg))
         _funcs.nx_write_frame(self.output_session.handle, byte_frame, timeout)
 

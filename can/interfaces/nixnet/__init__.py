@@ -4,4 +4,4 @@
 """
 
 from .nixnet import NiXnetBus
-from .errors import XnetError, XnetResourceWarning, XnetWarning # NOQA
+from .errors import XnetError, XnetResourceWarning, XnetWarning  # NOQA
