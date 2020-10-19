@@ -1469,42 +1469,6 @@ class FlexRayPocState(enum.Enum):
     CONFIG = _cconsts.NX_FLEX_RAY_POC_STATE_CONFIG
 
 
-class LinCommState(enum.Enum):
-    """LIN Comm State
-
-    Values:
-        IDLE:
-            This is the LIN interface initial state on power-up. The
-            interface is essentially off, in that it is not attempting to
-            communicate with other nodes (ECUs). When the start trigger
-            occurs for the LIN interface, it transitions from the Idle
-            state to the Active state. When the interface stops due to a
-            call to XNET Stop, the LIN interface transitions from either
-            Active or Inactive to the Idle state.
-        ACTIVE:
-            This state reflects normal communication. The LIN interface remains
-            in this state as long as bus activity is detected (frame headers
-            received or transmitted).
-        INACTIVE:
-            This state indicates that no bus activity has been detected in the
-            past four seconds.
-
-            Regardless of whether the interface acts as a master or slave, it
-            transitions to this state after four seconds of bus inactivity. As
-            soon as bus activity is detected (break or frame header), the
-            interface transitions to the Active state.
-
-            The LIN interface does not go to sleep automatically when it
-            transitions to Inactive. To place the interface into sleep mode,
-            set the XNET Session Interface:LIN:Sleep property when you detect
-            the Inactive state.
-    """
-
-    IDLE = _cconsts.NX_LIN_COMM_STATE_IDLE
-    ACTIVE = _cconsts.NX_LIN_COMM_STATE_ACTIVE
-    INACTIVE = _cconsts.NX_LIN_COMM_STATE_INACTIVE
-
-
 class LinDiagnosticSchedule(enum.Enum):
     """LIN Diagnostic Schedule
 

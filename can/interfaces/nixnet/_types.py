@@ -15,32 +15,9 @@ from can.interfaces.nixnet import _errors
 # from . import _enums as constants
 
 __all__ = [
-    "DriverVersion",
     "CanComm",
-    "LinComm",
-    "CanIdentifier",
-    "PduProperties",
+    "CanIdentifier"
 ]
-
-
-DriverVersion_ = collections.namedtuple(
-    "DriverVersion_", ["major", "minor", "update", "phase", "build"]
-)
-
-
-class DriverVersion(DriverVersion_):
-    """Driver Version
-
-    The arguments align with the following fields: ``[major].[minor].[update][phase][build]``.
-
-    Attributes:
-        major (int):
-        minor (int):
-        update (int):
-        phase (:any:`nixnet._enums.Phase`):
-        build (int):
-    """
-
 
 CanComm_ = collections.namedtuple(
     "CanComm_",
@@ -87,91 +64,6 @@ class CanComm(CanComm_):
 
     pass
 
-
-LinComm_ = collections.namedtuple(
-    "LinComm_",
-    [
-        "sleep",
-        "state",
-        "last_err",
-        "err_received",
-        "err_expected",
-        "err_id",
-        "tcvr_rdy",
-        "sched_index",
-    ],
-)
-
-
-class LinComm(LinComm_):
-    """CAN Communication State.
-
-    Attributes:
-        sleep (bool): Sleep.
-            Indicates whether the transceiver and communication
-            controller are in their sleep state. False indicates normal
-            operation (awake), and true indicates sleep.
-        state (:any:`nixnet._enums.LinCommState`): Communication State
-        last_err (:any:`nixnet._enums.LinLastErr`): Last Error.
-            Last error specifies the status of the last attempt to receive or
-            transmit a frame
-        err_received (int): Returns the value received from the network
-            when last error occurred.
-
-            When ``last_err`` is ``READBACK``, this is the value read back.
-
-            When ``last_err`` is ``CHECKSUM``, this is the received checksum.
-        err_expected (int): Returns the value that the LIN interface
-            expected to see (instead of last received).
-
-            When ``last_err`` is ``READBACK``, this is the value transmitted.
-
-            When ``last_err`` is ``CHECKSUM``, this is the calculated checksum.
-        err_id (int): Returns the frame identifier in which the last error
-            occurred.
-
-            This is not applicable when ``last_err`` is ``NONE`` or ``UNKNOWN_ID``.
-        tcvr_rdy (bool): Indicates whether the LIN transceiver is powered from
-            the bus.
-
-            True indicates the bus power exists, so it is safe to start
-            communication on the LIN interface.
-
-            If this value is false, you cannot start communication
-            successfully. Wire power to the LIN transceiver and run your
-            application again.
-        sched_index (int): Indicates the LIN schedule that the interface
-            currently is running.
-
-            This index refers to a LIN schedule that you requested using the
-            :any:`nixnet._session.base.SessionBase.change_lin_schedule` function. It
-            indexes the array of schedules represented in the
-            :any:`nixnet._session.intf.Interface.lin_sched_names`.
-
-            This index applies only when the LIN interface is running as a
-            master. If the LIN interface is running as a slave only, this
-            element should be ignored.
-    """
-
-    pass
-
-
-PduProperties_ = collections.namedtuple(
-    "PDU_PROPERTIES_", ["pdu", "start_bit", "update_bit"]
-)
-
-
-class PduProperties(PduProperties_):
-    """Properties that map a PDU onto a frame.
-
-    Mapping PDUs to a frame requires setting three frame properties that are combined into this tuple.
-
-    Attributes:
-        pdu (:any:`Pdu`): Defines the sequence of values for the other two properties.
-        start_bit (int): Defines the start bit of the PDU inside the frame.
-        update_bit (int): Defines the update bit for the PDU inside the frame.
-            If the update bit is not used, set the value to ``-1``.
-    """
 
 
 class CanIdentifier(object):

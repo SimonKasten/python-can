@@ -8,7 +8,7 @@ import time
 
 from can import BusABC
 from can.bus import BusState
-from .errors import XnetError, XnetResourceWarning, XnetWarning  # NOQA
+from can.interfaces.nixnet.errors import XnetError, XnetResourceWarning, XnetWarning  # NOQA
 
 
 from can.interfaces.nixnet import _enums as constants
