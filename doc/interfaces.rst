@@ -20,6 +20,7 @@ The available interfaces are:
    interfaces/pcan
    interfaces/usb2can
    interfaces/nican
+   interfaces/nixnet
    interfaces/iscan
    interfaces/neovi
    interfaces/vector

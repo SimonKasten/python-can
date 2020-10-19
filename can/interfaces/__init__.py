@@ -15,6 +15,7 @@ BACKENDS = {
     "usb2can": ("can.interfaces.usb2can", "Usb2canBus"),
     "ixxat": ("can.interfaces.ixxat", "IXXATBus"),
     "nican": ("can.interfaces.nican", "NicanBus"),
+    "nixnet": ("can.interfaces.nixnet", "NiXnetBus"),
     "iscan": ("can.interfaces.iscan", "IscanBus"),
     "virtual": ("can.interfaces.virtual", "VirtualBus"),
     "neovi": ("can.interfaces.ics_neovi", "NeoViBus"),
