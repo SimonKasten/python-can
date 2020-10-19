@@ -55,6 +55,10 @@ class NiXnetBus(BusABC):
         self.output_session.intf.baud_rate = bitrate
 
         self.input_session.start()
+        self.output_session.start()
+        self.input_session.flush()
+        self.output_session.flush()
+
 
         super(NiXnetBus, self).__init__(
             channel=channel, state=state, bitrate=bitrate, *args, **kwargs
@@ -69,20 +73,20 @@ class NiXnetBus(BusABC):
         """
         ###POMMES
         if (
-            self.input_session.can_comm == CanCommState.BUS_OFF
-            or self.output_session.can_comm == CanCommState.BUS_OFF
+            self.input_session.can_comm.state == CanCommState.BUS_OFF
+            or self.output_session.can_comm.state == CanCommState.BUS_OFF
         ):
             return BusState.ERROR
 
-        elif (
-            self.input_session.can_comm == CanCommState.ERROR_PASSIVE
-            or self.output_session.can_comm == CanCommState.ERROR_PASSIVE
+        if (
+            self.input_session.can_comm.state == CanCommState.ERROR_PASSIVE
+            or self.output_session.can_comm.state == CanCommState.ERROR_PASSIVE
         ):
             return BusState.PASSIVE
 
-        elif (
-            self.input_session.can_comm == CanCommState.ERROR_ACTIVE
-            or self.output_session.can_comm == CanCommState.ERROR_ACTIVE
+        if (
+            self.input_session.can_comm.state == CanCommState.ERROR_ACTIVE
+            or self.output_session.can_comm.state == CanCommState.ERROR_ACTIVE
         ):
             return BusState.ACTIVE
 
@@ -96,6 +100,9 @@ class NiXnetBus(BusABC):
         """
         Read a msg from NIXnet BUS
         """
+        if timeout is None:
+            timeout = 0
+
         if self.input_session.num_pend:
             buffer, num = _funcs.nx_read_frame(
                 self.input_session.handle, _frames.nxFrameFixed_t.size, timeout
@@ -110,12 +117,14 @@ class NiXnetBus(BusABC):
         return None, True
 
 
-    def send(self, msg, timeout=None):
+    def send(self, msg, timeout=constants.Timeouts.TIMEOUT_NONE):
         if timeout is None:
             timeout = 0
 
-        byte_frame = b"".join(_frames.serialize_can_msg(msg))
-        _funcs.nx_write_frame(self.output_session.handle, byte_frame, timeout)
+        if self.output_session.num_pend < 100:
+            byte_frame = b"".join(_frames.serialize_can_msg(msg))
+            _funcs.nx_write_frame(self.output_session.handle, byte_frame, timeout)
+
 
     def __del__(self):
         print("Closing NIXNET Sessions")
