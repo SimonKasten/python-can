@@ -1,16 +1,22 @@
-﻿from __future__ import absolute_import
+﻿"""
+Error module for NIXNET CAN interface.
+"""
+
+
+from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
 import typing  # NOQA: F401
 import warnings
 
+from can import CanError
 from can.interfaces.nixnet import _enums
 
 __all__ = ["XnetError", "XnetWarning", "XnetResourceWarning"]
 
 
-class Error(Exception):
+class Error(CanError):
     """Base error class for module."""
 
     pass

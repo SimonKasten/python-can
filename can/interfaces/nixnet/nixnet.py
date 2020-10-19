@@ -4,19 +4,11 @@ Enable basic CAN over a NI XNet device.
 
 from __future__ import absolute_import, print_function, division
 
-from can import CanError, Message, BusABC
+from can import BusABC
 from can.bus import BusState
 
-from can.interfaces.nixnet.errors import XnetError  # NOQA: F401
-from can.interfaces.nixnet.errors import XnetResourceWarning  # NOQA: F401
-from can.interfaces.nixnet.errors import XnetWarning  # NOQA: F401
 
 from can.interfaces.nixnet import _enums as constants
-from can.interfaces.nixnet import _types
-
-
-import typing  # NOQA: F401
-
 from can.interfaces.nixnet import _frames
 from can.interfaces.nixnet import _funcs
 from can.interfaces.nixnet import _utils
@@ -26,8 +18,9 @@ from can.interfaces.nixnet._session import base
 
 
 class NiXnetBus(BusABC):
+    """A NI XNet Bus."""
     def __init__(
-        self, channel="CAN3", state=BusState.ACTIVE, bitrate=None, *args, **kwargs
+        self, *args, channel="CAN1", state=BusState.ACTIVE, bitrate=None, **kwargs
     ):
         """A NI XNet interface to CAN."""
 
@@ -60,7 +53,7 @@ class NiXnetBus(BusABC):
         self.input_session.start()
 
         super(NiXnetBus, self).__init__(
-            channel=channel, state=state, bitrate=bitrate, *args, **kwargs
+            *args, channel=channel, state=state, bitrate=bitrate, **kwargs
         )
 
     @property
@@ -99,18 +92,17 @@ class NiXnetBus(BusABC):
         """
         Read a msg from NIXnet BUS
         """
-        if self.input_session.num_pend :
+        if self.input_session.num_pend:
             if timeout is None:
                 timeout = constants.Timeouts.TIMEOUT_INFINITE
             buffer, num = _funcs.nx_read_frame(
-                self.input_session._handle, _frames.nxFrameFixed_t.size, timeout
+                self.input_session.handle, _frames.nxFrameFixed_t.size, timeout
             )
             frame = _frames.parse_single_frame(buffer[:num])
             frame.channel = self.channel_info
 
             if frame:
                 return frame, True
-       
         # no pending Message
         return None, True
 
@@ -118,10 +110,9 @@ class NiXnetBus(BusABC):
     def send(self, msg, timeout=None):
         if timeout is None:
             timeout = 0
-
-        byte_frame = b"".join(_frames.serialize_can_msg(msg))   
-        _funcs.nx_write_frame(self.output_session._handle, byte_frame, timeout)
-
+        
+        byte_frame = b"".join(_frames.serialize_can_msg(msg))
+        _funcs.nx_write_frame(self.output_session.handle, byte_frame, timeout)
 
     def __del__(self):
         print("Closing NIXNET Sessions")
@@ -130,11 +121,3 @@ class NiXnetBus(BusABC):
             self.input_session.close()
         except:
             print("No Sessions created")
-
-
-class NiXnetError(CanError):
-    """
-    A generic error on a NiXnetBus.
-    """
-
-    pass

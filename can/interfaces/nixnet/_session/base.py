@@ -383,6 +383,11 @@ class SessionBase(object):
         )  # NOQA: E501
 
     @property
+    def handle(self):
+        """returns handle for nixnet."""
+        return self._handle
+
+    @property
     def time_current(self):
         # type: () -> int
         """int: Current interface time."""

@@ -13,7 +13,7 @@ from can.interfaces.nixnet import _enums as constants
 from can.interfaces.nixnet import _types
 
 
-def flatten_items(list):
+def flatten_items(_list):
     # type: (typing.Union[typing.Text, typing.List[typing.Text]]) -> typing.Text
     """Flatten an item list to a string
 
@@ -24,15 +24,15 @@ def flatten_items(list):
     >>> str(flatten_items(None))
     ''
     """
-    if isinstance(list, six.string_types):
+    if isinstance(_list, six.string_types):
         # For FRAME_IN_QUEUED / FRAME_OUT_QUEUED
         # Convenience for everything else
-        if "," in list:
+        if "," in _list:
             _errors.raise_xnet_error(_cconsts.NX_ERR_INVALID_PROPERTY_VALUE)
-        flattened = list
-    elif isinstance(list, collections.Iterable):
-        flattened = ",".join(list)
-    elif list is None:
+        flattened = _list
+    elif isinstance(_list, collections.Iterable):
+        flattened = ",".join(_list)
+    elif _list is None:
         # For FRAME_IN_STREAM / FRAME_OUT_STREAM
         flattened = ""
     else:
