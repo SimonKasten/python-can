@@ -71,7 +71,6 @@ class NiXnetBus(BusABC):
 
         :type: can.BusState
         """
-        ###POMMES
         if (
             self.input_session.can_comm.state == CanCommState.BUS_OFF
             or self.output_session.can_comm.state == CanCommState.BUS_OFF

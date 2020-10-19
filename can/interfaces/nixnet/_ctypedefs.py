@@ -105,7 +105,6 @@ class nxStatus_t(u32):  # NOQA: N801
     pass
 
 
-###POMMES
 class nxTimestamp_t(u64):  # NOQA: N801
     """"Absolute time, given in 100 ns increments since Jan 1, 1601, 12:00 AM UTC."""
 
