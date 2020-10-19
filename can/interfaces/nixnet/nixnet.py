@@ -12,7 +12,7 @@ from can.interfaces.nixnet.errors import XnetResourceWarning  # NOQA: F401
 from can.interfaces.nixnet.errors import XnetWarning  # NOQA: F401
 
 from can.interfaces.nixnet import _enums as constants
-from can.interfaces.nixnet import types
+from can.interfaces.nixnet import _types
 
 
 import typing  # NOQA: F401
@@ -99,11 +99,7 @@ class NiXnetBus(BusABC):
         """
         Read a msg from NIXnet BUS
         """
-
-        print("TODO: use python-can´s Message Class ")
-        print("TODO: num_pend inc msg: ", self.input_session.num_pend)
-
-        try:
+        if self.input_session.num_pend :
             if timeout is None:
                 timeout = constants.Timeouts.TIMEOUT_INFINITE
             buffer, num = _funcs.nx_read_frame(
@@ -112,27 +108,20 @@ class NiXnetBus(BusABC):
             frame = _frames.parse_single_frame(buffer[:num])
             frame.channel = self.channel_info
 
-        except:
-            print("_recv_internal timed out")
-            return None, True
-
-        if frame:
-            return frame, True
-
+            if frame:
+                return frame, True
+       
+        # no pending Message
         return None, True
+
 
     def send(self, msg, timeout=None):
         if timeout is None:
             timeout = 0
 
-        # frame = types.CanFrame(
-        #     msg.arbitration_id, constants.FrameType.CAN_DATA, msg.data
-        # )
-        # byte_frame = b"".join(_frames.serialize_frame(frame.to_raw()))
-        byte_frame = b"".join(_frames.serialize_can_msg(msg))
-        
+        byte_frame = b"".join(_frames.serialize_can_msg(msg))   
         _funcs.nx_write_frame(self.output_session._handle, byte_frame, timeout)
-        print("Sent frame", msg)
+
 
     def __del__(self):
         print("Closing NIXNET Sessions")

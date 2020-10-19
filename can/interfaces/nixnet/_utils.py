@@ -10,7 +10,7 @@ import six
 from can.interfaces.nixnet import _cconsts
 from can.interfaces.nixnet import _errors
 from can.interfaces.nixnet import _enums as constants
-from can.interfaces.nixnet import types
+from can.interfaces.nixnet import _types
 
 
 def flatten_items(list):
@@ -42,7 +42,7 @@ def flatten_items(list):
 
 
 def parse_can_comm_bitfield(bitfield):
-    # type:  (int) -> types.CanComm
+    # type:  (int) -> _types.CanComm
     """Parse a CAN Comm bitfield."""
     state = constants.CanCommState(bitfield & 0x0F)
     tcvr_err = ((bitfield >> 4) & 0x01) != 0
@@ -50,11 +50,11 @@ def parse_can_comm_bitfield(bitfield):
     last_err = constants.CanLastErr((bitfield >> 8) & 0x0F)
     tx_err_count = (bitfield >> 16) & 0x0FF
     rx_err_count = (bitfield >> 24) & 0x0FF
-    return types.CanComm(state, tcvr_err, sleep, last_err, tx_err_count, rx_err_count)
+    return _types.CanComm(state, tcvr_err, sleep, last_err, tx_err_count, rx_err_count)
 
 
 def parse_lin_comm_bitfield(first, second):
-    # type: (int, int) -> types.LinComm
+    # type: (int, int) -> _types.LinComm
     """Parse a LIN Comm first."""
     sleep = ((first >> 1) & 0x01) != 0
     state = constants.LinCommState((first >> 2) & 0x03)
@@ -66,7 +66,7 @@ def parse_lin_comm_bitfield(first, second):
 
     sched_index = second & 0x0FF
 
-    return types.LinComm(
+    return _types.LinComm(
         sleep,
         state,
         last_err,

@@ -13,7 +13,7 @@ from can.interfaces.nixnet import _props
 from can.interfaces.nixnet import _utils
 from can.interfaces.nixnet import _enums as constants
 from can.interfaces.nixnet import errors
-from can.interfaces.nixnet import types  # NOQA: F401
+from can.interfaces.nixnet import _types  # NOQA: F401
 
 from can.interfaces.nixnet._session import intf as session_intf
 
@@ -454,7 +454,7 @@ class SessionBase(object):
 
     @property
     def can_comm(self):
-        # type: () -> types.CanComm
+        # type: () -> _types.CanComm
         """:any:`nixnet.types.CanComm`: CAN Communication state"""
         state_value_ctypes = _ctypedefs.u32()
         state_size = ctypes.sizeof(state_value_ctypes)
@@ -469,7 +469,7 @@ class SessionBase(object):
 
     @property
     def lin_comm(self):
-        # type: () -> types.LinComm
+        # type: () -> _types.LinComm
         """:any:`nixnet.types.LinComm`: LIN Communication state"""
         state_value_ctypes = (_ctypedefs.u32 * 2)()  # type: ignore
         state_size = ctypes.sizeof(state_value_ctypes)
