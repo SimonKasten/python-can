@@ -6,13 +6,8 @@ from __future__ import print_function
 import collections
 import typing  # NOQA: F401
 
-# import six
-
 from can.interfaces.nixnet import _cconsts
 from can.interfaces.nixnet import _errors
-
-# from . import _py2
-# from . import _enums as constants
 
 __all__ = [
     "CanComm",
