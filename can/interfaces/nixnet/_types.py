@@ -10,8 +10,7 @@ from can.interfaces.nixnet import _cconsts
 from can.interfaces.nixnet import _errors
 
 __all__ = [
-    "CanComm",
-    "CanIdentifier"
+    "CanComm"
 ]
 
 CanComm_ = collections.namedtuple(
@@ -58,96 +57,3 @@ class CanComm(CanComm_):
     """
 
     pass
-
-
-
-class CanIdentifier(object):
-    """CAN frame arbitration identifier.
-
-    Attributes:
-        identifier(int): CAN frame arbitration identifier
-        extended(bool): If the identifier is extended
-    """
-
-    _FRAME_ID_MASK = 0x000007FF
-    _EXTENDED_FRAME_ID_MASK = 0x1FFFFFFF
-
-    def __init__(self, identifier, extended=False):
-        # type: (int, bool) -> None
-        self.identifier = identifier
-        self.extended = extended
-
-    @classmethod
-    def from_raw(cls, raw):
-        # type: (int) -> CanIdentifier
-        """Parse a raw frame identifier into a CanIdentifier
-
-        Args:
-            raw(int): A raw frame identifier
-
-        Returns:
-            CanIdentifier: parsed value
-
-        >>> CanIdentifier.from_raw(0x1)
-        CanIdentifier(0x1)
-        >>> CanIdentifier.from_raw(0x20000001)
-        CanIdentifier(0x1, extended=True)
-        """
-        extended = bool(raw & _cconsts.NX_FRAME_ID_CAN_IS_EXTENDED)
-        if extended:
-            identifier = raw & cls._EXTENDED_FRAME_ID_MASK
-        else:
-            identifier = raw & cls._FRAME_ID_MASK
-        return cls(identifier, extended)
-
-    def __int__(self):
-        """Convert CanIdentifier into a raw frame identifier
-
-        >>> hex(int(CanIdentifier(1)))
-        '0x1'
-        >>> hex(int(CanIdentifier(1, True)))
-        '0x20000001'
-        """
-        identifier = self.identifier
-        if self.extended:
-            if identifier != (identifier & self._EXTENDED_FRAME_ID_MASK):
-                _errors.check_for_error(_cconsts.NX_ERR_UNDEFINED_FRAME_ID)
-            identifier |= _cconsts.NX_FRAME_ID_CAN_IS_EXTENDED
-        else:
-            if identifier != (identifier & self._FRAME_ID_MASK):
-                _errors.check_for_error(_cconsts.NX_ERR_UNDEFINED_FRAME_ID)
-        return identifier
-
-    def __eq__(self, other):
-        if isinstance(other, CanIdentifier):
-            other_id = typing.cast(CanIdentifier, other)
-            return all(
-                (
-                    self.identifier == other_id.identifier,
-                    self.extended == other_id.extended,
-                )
-            )
-        else:
-            return NotImplemented
-
-    def __ne__(self, other):
-        result = self.__eq__(other)
-        if result is NotImplemented:
-            return result
-        else:
-            return not result
-
-    def __repr__(self):
-        """CanIdentifier debug representation.
-
-        >>> CanIdentifier(1)
-        CanIdentifier(0x1)
-        >>> CanIdentifier(1, True)
-        CanIdentifier(0x1, extended=True)
-        """
-        if self.extended:
-            return "{}(0x{:x}, extended={})".format(
-                type(self).__name__, self.identifier, self.extended
-            )
-        else:
-            return "{}(0x{:x})".format(type(self).__name__, self.identifier)

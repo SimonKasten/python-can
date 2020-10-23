@@ -127,9 +127,6 @@ class Interface(object):
         type is an array of integers. Each integer represents a CAN or LIN
         frame's identifier, using the same encoding as :any:`nixnet.types.RawFrame`.
 
-        For CAN Frames, see :any:`nixnet.types.CanIdentifier` for parsing and
-        generating raw identifiers.
-
         LIN frame ID values may be within the range of possible LIN
         IDs (0-63).
 

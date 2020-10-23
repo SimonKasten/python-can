@@ -150,6 +150,8 @@ def parse_single_frame(raw_frame):
     return msg
 
 
+_FRAME_ID_MASK = 0x000007FF
+_EXTENDED_FRAME_ID_MASK = 0x1FFFFFFF
 
 def serialize_can_msg(can_msg):
     """Yields units that compose the frame."""
@@ -171,16 +173,24 @@ def serialize_can_msg(can_msg):
     if payload_length != (payload_length & 0xFF):
         _errors.check_for_error(_cconsts.NX_ERR_NON_J1939_FRAME_SIZE)
 
-    if isinstance(can_msg.arbitration_id, int):
-        identifier = _types.CanIdentifier(
-            can_msg.arbitration_id, extended=can_msg.is_extended_id
-        )
+
+    identifier = can_msg.arbitration_id
+    # Convert can_msg.arbitration_id into a raw frame identifier
+    if can_msg.is_extended_id:
+        if identifier != (identifier & _EXTENDED_FRAME_ID_MASK):
+            _errors.check_for_error(_cconsts.NX_ERR_UNDEFINED_FRAME_ID)
+        identifier |= _cconsts.NX_FRAME_ID_CAN_IS_EXTENDED
     else:
-        raise ValueError("frame cant be serialized, arbitration_id must be int")
+        if identifier != (identifier & _FRAME_ID_MASK):
+            _errors.check_for_error(_cconsts.NX_ERR_UNDEFINED_FRAME_ID)
+
+    if not isinstance(identifier, int):
+        raise ValueError("frame cant be serialized, identifier must be int")
+
 
     base_unit = nxFrameFixed_t.pack(
         0,  # timestamp, used only for read
-        int(identifier),
+        identifier,
         FrameType.CAN_DATA.value,
         0,  # flags, can be used for echo
         0,  # info, not used on can
