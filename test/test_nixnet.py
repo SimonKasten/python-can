@@ -19,7 +19,6 @@ from can.interfaces.nixnet import _cfuncs
 from can.interfaces.nixnet import _utils
 from can.interfaces.nixnet import _enums
 from can.interfaces.nixnet import _lib
-from can.interfaces.nixnet import _types
 
 
 def raise_code(code):
@@ -256,7 +255,7 @@ class TestNIXnetBus(unittest.TestCase):
     def test_parse_can_comm_bitfield(self) -> None:
         """A part of Session.can_comm"""
         comm = _utils.parse_can_comm_bitfield(0)
-        assert comm == _types.CanComm(
+        assert comm == _utils.CanComm(
             _enums.CanCommState.ERROR_ACTIVE,
             tcvr_err=False,
             sleep=False,
@@ -265,7 +264,7 @@ class TestNIXnetBus(unittest.TestCase):
             rx_err_count=0)
 
         comm = _utils.parse_can_comm_bitfield(0xFFFFF6F3)
-        assert comm == _types.CanComm(
+        assert comm == _utils.CanComm(
             _enums.CanCommState.INIT,
             tcvr_err=True,
             sleep=True,

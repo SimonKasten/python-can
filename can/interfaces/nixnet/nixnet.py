@@ -10,12 +10,6 @@ from __future__ import absolute_import, print_function, division
 
 from can import BusABC
 from can.bus import BusState
-from can.interfaces.nixnet.errors import (
-    XnetError,
-    XnetResourceWarning,
-    XnetWarning,
-)  # NOQA
-
 
 from can.interfaces.nixnet import _enums as constants
 from can.interfaces.nixnet import _frames
