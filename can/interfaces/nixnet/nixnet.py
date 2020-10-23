@@ -2,6 +2,10 @@
 Enable basic CAN over a NI XNet device.
 """
 
+#TODO remove FlexRay and Lin
+#TODO implement CAN FD
+#TODO check frames serialze method
+
 from __future__ import absolute_import, print_function, division
 
 from can import BusABC
