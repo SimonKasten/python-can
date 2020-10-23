@@ -9,9 +9,7 @@ import typing  # NOQA: F401
 from can.interfaces.nixnet import _cconsts
 from can.interfaces.nixnet import _errors
 
-__all__ = [
-    "CanComm"
-]
+__all__ = ["CanComm"]
 
 CanComm_ = collections.namedtuple(
     "CanComm_",

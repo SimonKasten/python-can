@@ -152,6 +152,7 @@ def parse_single_frame(raw_frame):
 _FRAME_ID_MASK = 0x000007FF
 _EXTENDED_FRAME_ID_MASK = 0x1FFFFFFF
 
+
 def serialize_can_msg(can_msg):
     """Yields units that compose the frame."""
     payload = bytes(can_msg.data)
@@ -171,7 +172,6 @@ def serialize_can_msg(can_msg):
 
     if payload_length != (payload_length & 0xFF):
         _errors.check_for_error(_cconsts.NX_ERR_NON_J1939_FRAME_SIZE)
-
 
     identifier = can_msg.arbitration_id
     # Convert can_msg.arbitration_id into a raw frame identifier
@@ -203,6 +203,7 @@ def serialize_can_msg(can_msg):
     )
 
     return base_unit
+
 
 # TODO: need to check what payload_unit does
 # yield base_unit

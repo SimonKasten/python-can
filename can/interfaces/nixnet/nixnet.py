@@ -4,11 +4,13 @@ Enable basic CAN over a NI XNet device.
 
 from __future__ import absolute_import, print_function, division
 
-import time
-
 from can import BusABC
 from can.bus import BusState
-from can.interfaces.nixnet.errors import XnetError, XnetResourceWarning, XnetWarning  # NOQA
+from can.interfaces.nixnet.errors import (
+    XnetError,
+    XnetResourceWarning,
+    XnetWarning,
+)  # NOQA
 
 
 from can.interfaces.nixnet import _enums as constants
@@ -21,12 +23,12 @@ from can.interfaces.nixnet._cconsts import NX_PROP_SYS_DEV_REFS
 import can.interfaces.nixnet.system as system
 
 
-
 from can.interfaces.nixnet._session import base
 
 
 class NiXnetBus(BusABC):
     """A NI XNet Bus."""
+
     @staticmethod
     def _detect_available_configs():
         """List connected NI XNet interfaces."""
@@ -34,19 +36,15 @@ class NiXnetBus(BusABC):
             _handle = None
             _handle = _funcs.nx_system_open()
             _devices = system._collection.SystemCollection(
-                _handle, NX_PROP_SYS_DEV_REFS, system._device.Device)
+                _handle, NX_PROP_SYS_DEV_REFS, system._device.Device
+            )
 
         except NameError:
             # no devices found, so no configurations are available
             return []
 
         channels = []
-        row = {
-            "interface": "nixnet",
-            "device": "",
-            "serialNr": "",
-            "channel": []
-        }
+        row = {"interface": "nixnet", "device": "", "serialNr": "", "channel": []}
 
         for device in _devices:
             row["device"] = device.product_name
@@ -57,7 +55,6 @@ class NiXnetBus(BusABC):
                 channels.append(row)
 
         return channels
-
 
     def __init__(
         self, channel="CAN1", state=BusState.ACTIVE, bitrate=None, *args, **kwargs
@@ -95,11 +92,9 @@ class NiXnetBus(BusABC):
         self.input_session.flush()
         self.output_session.flush()
 
-
         super(NiXnetBus, self).__init__(
             channel=channel, state=state, bitrate=bitrate, *args, **kwargs
         )
-
 
     @property
     def state(self):
@@ -126,7 +121,6 @@ class NiXnetBus(BusABC):
         ):
             return BusState.ACTIVE
 
-
     @property
     def tx_num_pend(self):
         """
@@ -134,14 +128,12 @@ class NiXnetBus(BusABC):
         """
         return self.output_session.num_pend
 
-
     @property
     def rx_num_pend(self):
         """
         Return number of pending RX Frames
         """
         return self.input_session.num_pend
-
 
     def flush_tx_buffer(self):
         """
@@ -169,14 +161,12 @@ class NiXnetBus(BusABC):
         # no pending Message
         return None, True
 
-
     def send(self, msg, timeout=constants.Timeouts.TIMEOUT_INFINITE.value):
         if timeout is None:
             timeout = constants.Timeouts.TIMEOUT_INFINITE.value
 
         byte_frame = _frames.serialize_can_msg(msg)
         _funcs.nx_write_frame(self.output_session.handle, byte_frame, timeout)
-
 
     def __del__(self):
         print("Closing NIXNET Sessions")

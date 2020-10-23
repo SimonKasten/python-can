@@ -18,12 +18,15 @@ class SystemCollection(collections.Iterable, collections.Sized):
         self._factory = factory
 
     def __repr__(self):
-        return '{}(handle={})'.format(type(self).__name__, self._handle)
+        return "{}(handle={})".format(type(self).__name__, self._handle)
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             sys_other = typing.cast(SystemCollection, other)
-            return self._handle == sys_other._handle and self._prop_id == sys_other._prop_id
+            return (
+                self._handle == sys_other._handle
+                and self._prop_id == sys_other._prop_id
+            )
         else:
             return NotImplemented
 
