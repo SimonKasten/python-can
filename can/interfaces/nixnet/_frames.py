@@ -7,7 +7,6 @@ import struct
 from can.interfaces.nixnet import _cconsts
 from can.interfaces.nixnet import _errors
 from can.interfaces.nixnet._enums import FrameType
-from can.interfaces.nixnet import _types
 
 from can import Message
 
@@ -187,17 +186,25 @@ def serialize_can_msg(can_msg):
     if not isinstance(identifier, int):
         raise ValueError("frame cant be serialized, identifier must be int")
 
+    f_type = _cconsts.NX_FRAME_TYPE_CAN_DATA
+    if can_msg.is_remote_frame:
+        f_type = _cconsts.NX_FRAME_TYPE_CAN_REMOTE
+    if can_msg.is_error_frame:
+        f_type = _cconsts.NX_FRAME_TYPE_CAN_BUS_ERROR
 
     base_unit = nxFrameFixed_t.pack(
         0,  # timestamp, used only for read
         identifier,
-        FrameType.CAN_DATA.value,
+        f_type,
         0,  # flags, can be used for echo
         0,  # info, not used on can
         payload_length,
         base_unit_payload,
     )
-    yield base_unit
 
-    if payload_unit:
-        yield payload_unit
+    return base_unit
+
+# TODO: need to check what payload_unit does
+# yield base_unit
+# if payload_unit:
+#     yield payload_unit

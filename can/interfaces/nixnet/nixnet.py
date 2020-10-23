@@ -174,7 +174,7 @@ class NiXnetBus(BusABC):
         if timeout is None:
             timeout = constants.Timeouts.TIMEOUT_INFINITE.value
 
-        byte_frame = b"".join(_frames.serialize_can_msg(msg))
+        byte_frame = _frames.serialize_can_msg(msg)
         _funcs.nx_write_frame(self.output_session.handle, byte_frame, timeout)
 
 
