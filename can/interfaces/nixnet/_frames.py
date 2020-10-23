@@ -66,7 +66,7 @@ def _calculate_payload_size(payload_length):
     >>> _calculate_payload_size(16)
     16
     """
-    if 8 < payload_length:
+    if payload_length > 8:
         return (payload_length + 7) & 0x07F8
     else:
         return 8

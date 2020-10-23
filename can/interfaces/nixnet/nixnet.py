@@ -17,7 +17,7 @@ from can.interfaces.nixnet import _funcs
 from can.interfaces.nixnet import _utils
 from can.interfaces.nixnet._enums import CanCommState
 
-from can.interfaces.nixnet._cconsts import NX_PROP_DEV_INTF_REFS, NX_PROP_DEV_INTF_REFS_ALL, NX_PROP_SYS_DEV_REFS
+from can.interfaces.nixnet._cconsts import NX_PROP_SYS_DEV_REFS
 import can.interfaces.nixnet.system as system
 
 
