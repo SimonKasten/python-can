@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import struct
+# pylint: disable=line-too-long
 
 from can.interfaces.nixnet import _cconsts
 from can.interfaces.nixnet import _errors
@@ -154,7 +155,7 @@ _EXTENDED_FRAME_ID_MASK = 0x1FFFFFFF
 
 
 def serialize_can_msg(can_msg):
-    """Yields units that compose the frame."""
+    """compose the frame."""
     payload = bytes(can_msg.data)
     base_unit_payload = payload[0:MAX_BASE_UNIT_PAYLOAD_LENGTH]
     base_unit_padding_length = max(
@@ -204,8 +205,7 @@ def serialize_can_msg(can_msg):
 
     return base_unit
 
-
-# TODO: need to check what payload_unit does
-# yield base_unit
-# if payload_unit:
-#     yield payload_unit
+    # TODO: need to check what payload_unit does
+    # yield base_unit
+    # if payload_unit:
+    #     yield payload_unit

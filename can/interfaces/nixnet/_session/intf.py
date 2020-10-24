@@ -41,7 +41,7 @@ class Interface(object):
     @property
     def baud_rate(self):
         # type: () -> int
-        """int: CAN, FlexRay, or LIN interface baud rate.
+        """int: CAN interface baud rate.
 
         The default value for this interface property is the same as the
         cluster's baud rate in the database. Your application can set this
@@ -132,8 +132,8 @@ class Interface(object):
 
         See also :any:`Interface.out_strm_list`.
         """
-        for id in _props.get_session_intf_can_out_strm_list_by_id(self._handle):
-            yield id
+        for _id in _props.get_session_intf_can_out_strm_list_by_id(self._handle):
+            yield _id
 
     @out_strm_list_by_id.setter
     def out_strm_list_by_id(self, value):
@@ -192,7 +192,8 @@ class Interface(object):
     @property
     def can_lstn_only(self):
         # type: () -> bool
-        """bool:  Listen Only? property configures whether the CAN interface transmits any information to the CAN bus.
+        """bool:  Listen Only? property configures whether the CAN interface transmits any
+        information to the CAN bus.
 
         When this property is false, the interface can transmit CAN frames and
         acknowledge received CAN frames.
@@ -350,7 +351,8 @@ class Interface(object):
     @property
     def can_fd_baud_rate(self):
         # type: () -> int
-        """int: The fast data baud rate for :any:`can_io_mode` of :any:`nixnet._enums.CanIoMode` ``CAN_FD_BRS``
+        """int: The fast data baud rate for :any:`can_io_mode` of
+        :any:`nixnet._enums.CanIoMode` ``CAN_FD_BRS``
 
         The default value for this interface property is the same as the
         cluster's FD baud rate in the database. Your application can set this

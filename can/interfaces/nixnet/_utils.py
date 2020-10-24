@@ -12,13 +12,13 @@ from can.interfaces.nixnet import _errors
 from can.interfaces.nixnet import _enums as constants
 
 
-CanComm_ = collections.namedtuple(
-    "CanComm_",
+_CanComm = collections.namedtuple(
+    "_CanComm",
     ["state", "tcvr_err", "sleep", "last_err", "tx_err_count", "rx_err_count"],
 )
 
 
-class CanComm(CanComm_):
+class CanComm(_CanComm):
     """CAN Communication State.
 
     Attributes:

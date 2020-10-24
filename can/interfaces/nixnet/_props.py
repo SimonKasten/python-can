@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+# pylint: disable=bad-continuation
 import typing  # NOQA: F401
 
 from can.interfaces.nixnet import _cconsts
@@ -1147,26 +1148,6 @@ def get_system_intf_refs_can(
     return _cprops.get_session_ref_array(
         ref,
         _cconsts.NX_PROP_SYS_INTF_REFS_CAN,
-    )
-
-
-def get_system_intf_refs_flex_ray(
-    ref,  # type: int
-):
-    # type: (...) -> typing.Iterable[int]
-    return _cprops.get_session_ref_array(
-        ref,
-        _cconsts.NX_PROP_SYS_INTF_REFS_FLEX_RAY,
-    )
-
-
-def get_system_intf_refs_lin(
-    ref,  # type: int
-):
-    # type: (...) -> typing.Iterable[int]
-    return _cprops.get_session_ref_array(
-        ref,
-        _cconsts.NX_PROP_SYS_INTF_REFS_LIN,
     )
 
 

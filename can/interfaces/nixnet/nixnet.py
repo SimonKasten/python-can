@@ -2,9 +2,8 @@
 Enable basic CAN over a NI XNet device.
 """
 
-#TODO remove FlexRay and Lin
-#TODO implement CAN FD
-#TODO check frames serialze method
+# TODO implement CAN FD
+# TODO check frames serialze method
 
 from __future__ import absolute_import, print_function, division
 
@@ -61,20 +60,12 @@ class NiXnetBus(BusABC):
 
         self.channel_info = channel
 
-        flattened_list = _utils.flatten_items(None)
         self.input_session = base.SessionBase(
-            ":memory:",  # database_name,
-            "",  # cluster_name,
-            flattened_list,
             self.channel_info,
             constants.CreateSessionMode.FRAME_IN_STREAM,
         )
 
-        flattened_list = _utils.flatten_items(None)
         self.output_session = base.SessionBase(
-            ":memory:",  # database_name,
-            "",  # cluster_name,
-            flattened_list,
             self.channel_info,
             constants.CreateSessionMode.FRAME_OUT_STREAM,
         )

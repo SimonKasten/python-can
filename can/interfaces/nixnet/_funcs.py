@@ -14,14 +14,15 @@ from can.interfaces.nixnet import _errors
 def nx_create_session(
     database_name,  # type: typing.Text
     cluster_name,  # type: typing.Text
-    list,  # type: typing.Text
+    s_list,  # type: typing.Text
     interface,  # type: typing.Text
     mode,  # type: _enums.CreateSessionMode
 ):
+
     # type: (...) -> int
     database_name_ctypes = ctypes.create_string_buffer(database_name.encode("ascii"))
     cluster_name_ctypes = ctypes.create_string_buffer(cluster_name.encode("ascii"))
-    list_ctypes = ctypes.create_string_buffer(list.encode("ascii"))
+    list_ctypes = ctypes.create_string_buffer(s_list.encode("ascii"))
     interface_ctypes = ctypes.create_string_buffer(interface.encode("ascii"))
     mode_ctypes = _ctypedefs.u32(mode.value)
     session_ref_ctypes = _ctypedefs.nxSessionRef_t()

@@ -22,11 +22,11 @@ class SessionBase(object):
 
     def __init__(
         self,
-        database_name,  # type: typing.Text
-        cluster_name,  # type: typing.Text
-        list,  # type: typing.Text
         interface_name,  # type: typing.Text
         mode,  # type: constants.CreateSessionMode
+        database_name=":memory:",  # type: typing.Text
+        cluster_name="",  # type: typing.Text
+        _list="",  # type: typing.Text
     ):
         # type: (...) -> None
         """Create an XNET session at run time using named references to database objects.
@@ -61,7 +61,7 @@ class SessionBase(object):
         """
         self._handle = None  # To satisfy `__del__` in case nx_create_session throws
         self._handle = _funcs.nx_create_session(
-            database_name, cluster_name, list, interface_name, mode
+            database_name, cluster_name, _list, interface_name, mode
         )
         self._intf = session_intf.Interface(self._handle)
 
@@ -233,7 +233,7 @@ class SessionBase(object):
         """Wait for transmition to complete.
 
         All frames written for the session have been transmitted on the bus.
-        This condition applies to CAN, LIN, and FlexRay. This condition is state
+        This condition applies to CAN. This condition is state
         based, and the state is Boolean (true/false).
 
         Args:
@@ -274,12 +274,6 @@ class SessionBase(object):
         itself is ready to communicate, this places the transceiver into a sleep
         state. When a remote CAN node transmits a frame, the transceiver wakes
         up, and communication is restored. This wait detects that remote wakeup.
-
-        This wait is used for LIN when you set 'lin_sleep' property to
-        'constants.LinSleep.REMOTE_SLEEP' or 'constants.LinSleep.LOCAL_SLEEP'.
-        When asleep, if a remote LIN ECU transmits the wakeup pattern (break),
-        the XNET LIN interface detects this transmission and wakes up. This wait
-        detects that remote wakeup.
 
         Args:
             timeout(float): The maximum amount of time to wait in seconds.
@@ -530,7 +524,7 @@ class SessionBase(object):
         For output sessions, this is the number of frames/signal values provided
         to the appropriate write function but not yet transmitted onto the network.
 
-        Stream frame sessions using FlexRay or CAN FD protocol may use a
+        Stream frame sessions using CAN FD protocol may use a
         variable size of frames. In these cases, this property assumes the
         largest possible frame size. If you use smaller frames, the real number
         of pending values might be higher.
@@ -538,10 +532,6 @@ class SessionBase(object):
         The largest possible frames sizes are:
 
             CAN FD: 64 byte payload.
-
-            FlexRay: The higher value of the frame size in the static segment
-            and the maximum frame size in the dynamic segment. The XNET Cluster
-            FlexRay Payload Length Maximum property provides this value.
         """
         return _props.get_session_num_pend(self._handle)
 
@@ -566,7 +556,7 @@ class SessionBase(object):
         call the appropriate write function with this number of values and
         timeout of 0.0, it should return success.
 
-        Stream frame sessions using FlexRay or CAN FD protocol may use a
+        Stream frame sessions using CAN FD protocol may use a
         variable size of frames. In these cases, this property assumes the
         largest possible frame size. If you use smaller frames, the real number
         of pending values might be higher.
@@ -575,9 +565,6 @@ class SessionBase(object):
 
             CAN FD: 64 byte payload.
 
-            FlexRay: The higher value of the frame size in the static segment
-            and the maximum frame size in the dynamic segment. The XNET Cluster
-            FlexRay Payload Length Maximum property provides this value.
         """
         return _props.get_session_num_unused(self._handle)
 
@@ -614,7 +601,7 @@ class SessionBase(object):
         bytes. You can use this number to convert the Queue Size (in bytes)
         to/from the number of frame values.
 
-        For CAN FD and FlexRay frame I/O sessions, each frame value size can
+        For CAN FD frame I/O sessions, each frame value size can
         vary depending on the payload length. For more information, refer to
         Raw Frame Format.
 

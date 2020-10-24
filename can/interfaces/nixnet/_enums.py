@@ -1459,134 +1459,6 @@ class CanIoMode(enum.Enum):
     CAN_FD_BRS = _cconsts.NX_CAN_IO_MODE_CAN_FD_BRS
 
 
-class FlexRayPocState(enum.Enum):
-    DEFAULT_CONFIG = _cconsts.NX_FLEX_RAY_POC_STATE_DEFAULT_CONFIG
-    READY = _cconsts.NX_FLEX_RAY_POC_STATE_READY
-    NORMAL_ACTIVE = _cconsts.NX_FLEX_RAY_POC_STATE_NORMAL_ACTIVE
-    NORMAL_PASSIVE = _cconsts.NX_FLEX_RAY_POC_STATE_NORMAL_PASSIVE
-    HALT = _cconsts.NX_FLEX_RAY_POC_STATE_HALT
-    MONITOR = _cconsts.NX_FLEX_RAY_POC_STATE_MONITOR
-    CONFIG = _cconsts.NX_FLEX_RAY_POC_STATE_CONFIG
-
-
-class LinDiagnosticSchedule(enum.Enum):
-    """LIN Diagnostic Schedule
-
-    Values:
-        NULL:
-            The master does not execute any diagnostic schedule. No master
-            request or slave response headers are transmitted on the LIN.
-        MASTER_REQ:
-            The master executes a diagnostic master request schedule
-            (transmits a master request header onto the LIN) if it can.
-            First, a master request schedule must be defined for the LIN
-            cluster in the imported or in-memory database. Otherwise, error
-            'nixnet._enums.Err.DIAGNOSTIC_SCHEDULE_NOT_DEFINED' is returned
-            when attempting to set this value. Second, the master must have
-            a frame output queued session created for the master request frame,
-            and there must be one or more new master request frames pending in
-            the queue. If no new frames are pending in the output queue, no
-            master request header is transmitted. This allows the timing of
-            master request header transmission to be controlled by the timing
-            of master request frame writes to the output queue.
-
-            If there are no normal schedules pending, the master is effectively
-            in diagnostics-only mode, and master request headers are transmitted
-            at a rate determined by the slot delay defined for the master request
-            frame slot in the master request schedule or the
-            `nixnet._session.intf.Interface.lin_diag_s_tmin` property time, whichever
-            is greater, and the state of the master request frame output queue
-            as described above.
-
-            If there are normal schedules pending, the master is effectively in
-            diagnostics-interleaved mode, and a master request header transmission
-            is inserted between each complete execution of a run-once or
-            run-continuous schedule, as long as the
-            `nixnet._session.intf.Interface.lin_diag_s_tmin` property time has
-            been met, and there are one or more new master request frames pending
-            in the master request frame output queue.
-        SLAVE_RESP:
-            The master executes a diagnostic slave response schedule
-            (transmits a slave response header onto the LIN) if it is able to.
-            A slave response schedule must be defined for the LIN cluster in the
-            imported or in-memory database. Otherwise, error
-            'nixnet._enums.Err.DIAGNOSTIC_SCHEDULE_NOT_DEFINED' is returned when
-            attempting to set this value.
-
-            If there are no normal schedules pending, the master is effectively
-            in diagnostics-only mode, and slave response headers are transmitted
-            at the rate of the slot delay defined for the slave response frame
-            slot in the slave response schedule. The addressed slave may or
-            may not respond to each header, depending on its specified
-            P2min and STmin timings.
-
-            If there are normal schedules pending, the master is effectively in
-            diagnostics-interleaved mode, and a slave response header transmission
-            is inserted between each complete execution of a run-once or run-continuous
-            schedule. Here again, the addressed slave may or may not respond to each
-            header, depending on its specified P2min and STmin timings.
-    """
-
-    NULL = _cconsts.NX_LIN_DIAGNOSTIC_SCHEDULE_NULL
-    MASTER_REQ = _cconsts.NX_LIN_DIAGNOSTIC_SCHEDULE_MASTER_REQ
-    SLAVE_RESP = _cconsts.NX_LIN_DIAGNOSTIC_SCHEDULE_SLAVE_RESP
-
-
-class LinLastErr(enum.Enum):
-    """LIN Comm Last Error Code
-
-    Values:
-        NONE:
-            No bus error has occurred since the previous communication state read.
-        UNKNOWN_ID:
-            Received a frame identifier that is not valid.
-        FORM:
-            The form of a received frame is incorrect. For example, the
-            database specifies 8 bytes of payload, but you receive only 4
-            bytes.
-        FRAMING:
-            The byte framing is incorrect (for example, a missing stop bit).
-        READBACK:
-            The interface transmitted a byte, but the value read back from the
-            transceiver was different. This often is caused by a cabling
-            problem, such as noise.
-        TIMEOUT:
-            Receiving the frame took longer than the LIN-specified timeout.
-        CRC:
-            The received checksum was different than the expected checksum.
-    """
-
-    NONE = _cconsts.NX_LIN_LAST_ERR_CODE_NONE
-    UNKNOWN_ID = _cconsts.NX_LIN_LAST_ERR_CODE_UNKNOWN_ID
-    FORM = _cconsts.NX_LIN_LAST_ERR_CODE_FORM
-    FRAMING = _cconsts.NX_LIN_LAST_ERR_CODE_FRAMING
-    READBACK = _cconsts.NX_LIN_LAST_ERR_CODE_READBACK
-    TIMEOUT = _cconsts.NX_LIN_LAST_ERR_CODE_TIMEOUT
-    CRC = _cconsts.NX_LIN_LAST_ERR_CODE_CRC
-
-
-class LinProtocolVer(enum.Enum):
-    """LIN Protocol Version
-
-    Values:
-        VER_1_2:
-            Version 1.2
-        VER_1_3:
-            Version 1.3
-        VER_2_0:
-            Version 2.0
-        VER_2_1:
-            Version 2.1
-        VER_2_2:
-            Version 2.2
-    """
-
-    VER_1_2 = _cconsts.NX_LIN_PROTOCOL_VER_1_2
-    VER_1_3 = _cconsts.NX_LIN_PROTOCOL_VER_1_3
-    VER_2_0 = _cconsts.NX_LIN_PROTOCOL_VER_2_0
-    VER_2_1 = _cconsts.NX_LIN_PROTOCOL_VER_2_1
-    VER_2_2 = _cconsts.NX_LIN_PROTOCOL_VER_2_2
-
 
 class Condition(enum.Enum):
     TRANSMIT_COMPLETE = _cconsts.NX_CONDITION_TRANSMIT_COMPLETE
@@ -1609,14 +1481,18 @@ class Merge(enum.Enum):
             The target object with all dependent child objects
             is removed from the target cluster and replaced by the source objects.
         COPY_USE_TARGET:
-            The source object is ignored (the target cluster object with child objects remains unchanged).
+            The source object is ignored (the target cluster object with child objects
+            remains unchanged).
         MERGE_USE_SOURCE:
-            This adds child objects from the source object to child objects from the destination object.
+            This adds child objects from the source object to child objects from the
+            destination object.
             If target object contains a child object with the same name,
             the child object from the source frame replaces it.
-            The source object properties (for example, payload length of the frame) replace the target properties.
+            The source object properties (for example, payload length of the frame)
+            replace the target properties.
         MERGE_USE_TARGET:
-            This adds child objects from the source object to child objects from the destination object.
+            This adds child objects from the source object to child objects from the
+            destination object.
             If the target object contains a child object with the same name, it remains unchanged.
             The target object properties remain unchanged (for example, payload length).
     """
@@ -1951,39 +1827,6 @@ class CanTcvrType(enum.Enum):
     DISC = _cconsts.NX_CAN_TCVR_TYPE_DISC
 
 
-class FlexRayTerm(enum.Enum):
-    OFF = _cconsts.NX_FLEX_RAY_TERM_OFF
-    ON = _cconsts.NX_FLEX_RAY_TERM_ON
-
-
-class LinSleep(enum.Enum):
-    """LIN interface sleep/awake state
-
-    Values:
-        REMOTE_SLEEP:
-            Set interface to sleep locally and transmit sleep requests to
-            remote node.
-        REMOTE_WAKE:
-            Set interface to awake locally and transmit wakeup requests to
-            remote nodes.
-        LOCAL_SLEEP:
-            Set interface to sleep locally and not to interact with the network.
-        LOCAL_WAKE:
-            Set interface to awake locally and not to interact with the network.
-    """
-
-    REMOTE_SLEEP = _cconsts.NX_LIN_SLEEP_REMOTE_SLEEP
-    REMOTE_WAKE = _cconsts.NX_LIN_SLEEP_REMOTE_WAKE
-    LOCAL_SLEEP = _cconsts.NX_LIN_SLEEP_LOCAL_SLEEP
-    LOCAL_WAKE = _cconsts.NX_LIN_SLEEP_LOCAL_WAKE
-
-
-class LinTerm(enum.Enum):
-    """LIN Termination"""
-
-    OFF = _cconsts.NX_LIN_TERM_OFF
-    ON = _cconsts.NX_LIN_TERM_ON
-
 
 class OutStrmTimng(enum.Enum):
     """Output Stream Timing
@@ -2058,30 +1901,6 @@ class CanPendTxOrder(enum.Enum):
     BY_IDENTIFIER = _cconsts.NX_CAN_PEND_TX_ORDER_BY_IDENTIFIER
 
 
-class FlexRaySleep(enum.Enum):
-    LOCAL_SLEEP = _cconsts.NX_FLEX_RAY_SLEEP_LOCAL_SLEEP
-    LOCAL_WAKE = _cconsts.NX_FLEX_RAY_SLEEP_LOCAL_WAKE
-    REMOTE_WAKE = _cconsts.NX_FLEX_RAY_SLEEP_REMOTE_WAKE
-
-
-class FrmFlexRayChAssign(enum.Enum):
-    A = _cconsts.NX_FRM_FLEX_RAY_CH_ASSIGN_A
-    B = _cconsts.NX_FRM_FLEX_RAY_CH_ASSIGN_B
-    AAND_B = _cconsts.NX_FRM_FLEX_RAY_CH_ASSIGN_AAND_B
-    NONE = _cconsts.NX_FRM_FLEX_RAY_CH_ASSIGN_NONE
-
-
-class ClstFlexRaySampClkPer(enum.Enum):
-    P0125US = _cconsts.NX_CLST_FLEX_RAY_SAMP_CLK_PER_P0125US
-    P025US = _cconsts.NX_CLST_FLEX_RAY_SAMP_CLK_PER_P025US
-    P05US = _cconsts.NX_CLST_FLEX_RAY_SAMP_CLK_PER_P05US
-
-
-class FrmFlexRayTiming(enum.Enum):
-    CYCLIC = _cconsts.NX_FRM_FLEX_RAY_TIMING_CYCLIC
-    EVENT = _cconsts.NX_FRM_FLEX_RAY_TIMING_EVENT
-
-
 class FrmCanTiming(enum.Enum):
     """CAN Frame Timing
 
@@ -2098,12 +1917,14 @@ class FrmCanTiming(enum.Enum):
         CYCLIC_REMOTE:
             The receiving ECU transmits the CAN remote frame in a cyclic (periodic) manner.
             The :any:`Frame.can_tx_time` property defines the time between cycles.
-            The transmitting ECU responds to each CAN remote frame by transmitting the associated CAN data frame.
+            The transmitting ECU responds to each CAN remote frame by transmitting
+            the associated CAN data frame.
         EVENT_REMOTE:
             The receiving ECU transmits the CAN remote frame in an event-driven manner.
             The :any:`Frame.can_tx_time` property defines the minimum interval.
             For NI-XNET, the event occurs when you write a frame to a session.
-            The transmitting ECU responds to each CAN remote frame by transmitting the associated CAN data frame.
+            The transmitting ECU responds to each CAN remote frame by transmitting
+            the associated CAN data frame.
         CYCLIC_EVENT:
             This timing type is a combination of the cyclic and event timing.
             The frame is transmitted when you write to a session,
@@ -2160,82 +1981,6 @@ class SigDataType(enum.Enum):
     SIGNED = _cconsts.NX_SIG_DATA_TYPE_SIGNED
     UNSIGNED = _cconsts.NX_SIG_DATA_TYPE_UNSIGNED
     IEEE_FLOAT = _cconsts.NX_SIG_DATA_TYPE_IEEE_FLOAT
-
-
-class LinSchedRunMode(enum.Enum):
-    """LIN Schedule Run Mode.
-
-    Values:
-        CONTINUOUS:
-            The master runs the schedule continuously.
-            When the last entry executes,
-            the schedule starts again with the first entry.
-        ONCE:
-            The master runs the schedule once (all entries),
-            then returns to the previously running continuous schedule (or NULL).
-            If requests are submitted for multiple run-once schedules,
-            each run-once executes in succession based on its :any:`LinSched.priority`,
-            then the master returns to the continuous schedule (or NULL).
-        NULL:
-            All communication stops immediately.
-            A schedule with this run mode is called a *null schedule*.
-    """
-
-    CONTINUOUS = _cconsts.NX_LIN_SCHED_RUN_MODE_CONTINUOUS
-    ONCE = _cconsts.NX_LIN_SCHED_RUN_MODE_ONCE
-    NULL = _cconsts.NX_LIN_SCHED_RUN_MODE_NULL
-
-
-class LinSchedEntryType(enum.Enum):
-    """LIN Schedule Entry Type.
-
-    Values:
-        UNCONDITIONAL:
-            A single frame transfers in this slot.
-        SPORADIC:
-            The master transmits in this slot.
-            The master can select from multiple frames to transmit.
-            Only updated frames are transmitted.
-            When more than one frame is updated,
-            the master decides by priority which frame to send.
-            The other updated frame remains pending
-            and can be sent when this schedule entry is processed the following time.
-            The order of unconditional frames in :any:`LinSchedEntry.frames`
-            (the first frame has the highest priority) determines the frame priority.
-        EVENT_TRIGGERED:
-            Multiple slaves can transmit an unconditional frame in this slot.
-            The slave transmits the frame only if at least one frame signal has been updated.
-            When a collision occurs (multiple slaves try to transmit in the same slot),
-            this is detected and resolved using a different schedule
-            specified in the :any:`LinSchedEntry.collision_res_sched` property.
-            The resolving schedule runs once,
-            starting in the subsequent slot after the collision,
-            and automatically returns to the previous schedule
-            at the subsequent position where the collision occurred.
-        NODE_CONFIG_SERVICE:
-            The schedule entry contains a node configuration service.
-            The node configuration service is defined as raw data bytes
-            in :any:`LinSchedEntry.nc_ff_data_bytes`.
-    """
-
-    UNCONDITIONAL = _cconsts.NX_LIN_SCHED_ENTRY_TYPE_UNCONDITIONAL
-    SPORADIC = _cconsts.NX_LIN_SCHED_ENTRY_TYPE_SPORADIC
-    EVENT_TRIGGERED = _cconsts.NX_LIN_SCHED_ENTRY_TYPE_EVENT_TRIGGERED
-    NODE_CONFIG_SERVICE = _cconsts.NX_LIN_SCHED_ENTRY_TYPE_NODE_CONFIG_SERVICE
-
-
-class FrmLinChecksum(enum.Enum):
-    """LIN Frame Transmitted Checksum
-
-    Values:
-        CLASSIC:
-            Classic checksum.
-        ENHANCED:
-            Enhanced checksum.
-    """
-
-    CLASSIC = _cconsts.NX_FRM_LIN_CHECKSUM_CLASSIC
-    ENHANCED = _cconsts.NX_FRM_LIN_CHECKSUM_ENHANCED
 
 
 class FrameType(enum.Enum):
